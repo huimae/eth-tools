@@ -31,7 +31,7 @@ type SDL struct {
 }
 
 // NewSDL attempts to initialize an SDL context.
-func NewSDL(io imgui.IO, clientAPI SDLClientAPI) (*SDL, error) {
+func NewSDL(io imgui.IO, clientAPI SDLClientAPI, windowTitle string) (*SDL, error) {
 	runtime.LockOSThread()
 
 	err := sdl.Init(sdl.INIT_VIDEO)
@@ -39,7 +39,7 @@ func NewSDL(io imgui.IO, clientAPI SDLClientAPI) (*SDL, error) {
 		return nil, fmt.Errorf("failed to initialize SDL2: %v", err)
 	}
 
-	window, err := sdl.CreateWindow("ImGui-Go SDL2+"+string(clientAPI)+" example", sdl.WINDOWPOS_CENTERED, sdl.WINDOWPOS_CENTERED, 1280, 720, sdl.WINDOW_OPENGL)
+	window, err := sdl.CreateWindow(windowTitle, sdl.WINDOWPOS_CENTERED, sdl.WINDOWPOS_CENTERED, 600, 400, sdl.WINDOW_OPENGL|sdl.WINDOW_RESIZABLE)
 	if err != nil {
 		sdl.Quit()
 		return nil, fmt.Errorf("failed to create window: %v", err)

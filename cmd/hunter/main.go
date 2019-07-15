@@ -17,8 +17,10 @@ func main() {
 	context := imgui.CreateContext(nil)
 	defer context.Destroy()
 	io := imgui.CurrentIO()
-
-	platform, err := platforms.NewSDL(io, platforms.SDLClientAPIOpenGL3)
+	fontAtlas := io.Fonts()
+	fontAtlas.AddFontFromFileTTFV("./data/font.ttf", 16.0, imgui.DefaultFontConfig, fontAtlas.GlyphRangesChinese())
+	
+	platform, err := platforms.NewSDL(io, platforms.SDLClientAPIOpenGL3,"TokenHunter")
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(-1)

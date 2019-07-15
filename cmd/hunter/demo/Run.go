@@ -1,7 +1,9 @@
 package demo
 
 import (
-	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/inkyblackness/imgui-go"
@@ -34,71 +36,82 @@ type Renderer interface {
 // Run implements the main program loop of the demo. It returns when the platform signals to stop.
 // This demo application shows some basic features of ImGui, as well as exposing the standard demo window.
 func Run(p Platform, r Renderer) {
-	showDemoWindow := false
-	clearColor := [4]float32{0.0, 0.0, 0.0, 1.0}
-	f := float32(0.0)
-	counter := 0
-	showAnotherWindow := false
+	backgroundColor := [4]float32{255.0, 255.0, 255.0, 1.0}
+	networks := []string{
+		"Ropsten#wss://ropsten.infura.io/ws)",
+		"NBTestNet#ws://tokenbank.tk:7545/ws",
+		"DBLTestNet#ws://120.55.15.98:9527/ws",
+	}
+	var network = networks[0]
+	var privateKey, tokenAddr, pendingMsg string
+	var demo, pending, showPending bool
+
+	f, err := os.OpenFile("./data/config.txt", os.O_CREATE, 0655)
+	if err == nil {
+		b, err := ioutil.ReadAll(f)
+		if err == nil {
+			lines := strings.Split(string(b), "\n")
+			if len(lines) > 1 {
+				privateKey = lines[0]
+				tokenAddr = lines[1]
+			}
+		}
+	}
 
 	for !p.ShouldStop() {
 		p.ProcessEvents()
-
-		// Signal start of a new frame
 		p.NewFrame()
 		imgui.NewFrame()
 
-		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()!
-		// You can browse its code to learn more about Dear ImGui!).
-		if showDemoWindow {
-			imgui.ShowDemoWindow(&showDemoWindow)
+		if demo {
+			imgui.ShowDemoWindow(&demo)
 		}
 
-		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+		if showPending {
+			imgui.OpenPopup("pendingPop")
+		}
+
+		if imgui.BeginPopupModalV("pendingPop", &showPending, imgui.WindowFlagsNoTitleBar|imgui.WindowFlagsNoMove) {
+			imgui.Text(pendingMsg)
+			if !pending {
+				if imgui.Button("关闭") {
+					imgui.CloseCurrentPopup()
+				}
+			}
+			imgui.EndPopup()
+		}
+
 		{
-			imgui.Begin("Hello, world!") // Create a window called "Hello, world!" and append into it.
-
-			imgui.Text("This is some useful text.") // Display some text
-
-			imgui.Checkbox("Demo Window", &showDemoWindow) // Edit bools storing our window open/close state
-			imgui.Checkbox("Another Window", &showAnotherWindow)
-
-			imgui.SliderFloat("float", &f, 0.0, 1.0) // Edit one float using a slider from 0.0f to 1.0f
-			// TODO add example of ColorEdit3 for clearColor
-
-			if imgui.Button("Button") { // Buttons return true when clicked (most widgets return true when edited/activated)
-				counter++
+			imgui.Begin("TokenHunter")
+			imgui.Checkbox("「展示更多组件」", &demo)
+			imgui.Text("请选择测试节点，并将钱包私钥填入输入框")
+			if imgui.BeginCombo("测试节点", network) {
+				for i := 0; i < len(networks); i++ {
+					isSelected := network == networks[i]
+					if imgui.Selectable(networks[i]) {
+						network = networks[i]
+					}
+					if isSelected {
+						imgui.SetItemDefaultFocus()
+					}
+				}
+				imgui.EndCombo()
 			}
-			imgui.SameLine()
-			imgui.Text(fmt.Sprintf("counter = %d", counter))
-
-			// TODO add text of FPS based on IO.Framerate()
-
-			imgui.End()
-		}
-
-		// 3. Show another simple window.
-		if showAnotherWindow {
-			// Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			imgui.BeginV("Another window", &showAnotherWindow, 0)
-
-			imgui.Text("Hello from another window!")
-			if imgui.Button("Close Me") {
-				showAnotherWindow = false
+			imgui.InputText("代币地址", &tokenAddr)
+			imgui.InputText("钱包私钥", &privateKey)
+			if imgui.Button("领取 Token") {
+				showPending = true
+				pending = true
+				networkSplit := strings.Split(network, "#")
+				go getToken(privateKey, tokenAddr, networkSplit[1], &pending, &pendingMsg)
 			}
 			imgui.End()
 		}
 
-		// Rendering
-		imgui.Render() // This call only creates the draw data list. Actual rendering to framebuffer is done below.
-
-		r.PreRender(clearColor)
-		// A this point, the application could perform its own rendering...
-		// app.RenderScene()
-
+		imgui.Render()
+		r.PreRender(backgroundColor)
 		r.Render(p.DisplaySize(), p.FramebufferSize(), imgui.RenderedDrawData())
 		p.PostRender()
-
-		// sleep to avoid 100% CPU usage for this demo
 		<-time.After(time.Millisecond * 25)
 	}
 }
