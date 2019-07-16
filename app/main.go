@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
 
 	"github.com/naiba/tokenhunter/internal/erc20"
 	"github.com/naiba/tokenhunter/internal/ethutil"
@@ -17,7 +17,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	
+
 	"github.com/andlabs/ui"
 	_ "github.com/andlabs/ui/winmanifest"
 )
@@ -61,13 +61,12 @@ func setupUI() {
 	getBtn := ui.NewButton("获取代币")
 	getBtn.OnClicked(func(b *ui.Button) {
 		b.Disable()
-		num,_:= strconv.ParseInt(numEntry.Text(),10,64)
+		num, _ := strconv.ParseInt(numEntry.Text(), 10, 64)
 		network := strings.Split(networks[networkCombo.Selected()], "#")
-		go getToken(pkEntry.Text(), tokenEntry.Text(), network[1],num, b, mainwin)
+		go getToken(pkEntry.Text(), tokenEntry.Text(), network[1], num, b, mainwin)
 	})
 
 	getBox.Append(getBtn, true)
-
 
 	mainBox.Append(networkBox, false)
 	mainBox.Append(tokenBox, false)
@@ -78,7 +77,7 @@ func setupUI() {
 	mainwin.Show()
 }
 
-func getToken(pk, tokenAddr, network string,num int64, btn *ui.Button, win *ui.Window) {
+func getToken(pk, tokenAddr, network string, num int64, btn *ui.Button, win *ui.Window) {
 	setTitle := func(t string) {
 		go ui.QueueMain(func() {
 			win.SetTitle("Token 获取器：" + t)
