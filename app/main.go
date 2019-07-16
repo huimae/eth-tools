@@ -9,9 +9,9 @@ import (
 	"time"
 	"strconv"
 
-	"./internal/erc20"
-	"./internal/ethutil"
-	"./internal/uiutil"
+	"github.com/naiba/tokenhunter/internal/erc20"
+	"github.com/naiba/tokenhunter/internal/ethutil"
+	"github.com/naiba/tokenhunter/internal/uiutil"
 
 	"github.com/andlabs/ui"
 	_ "github.com/andlabs/ui/winmanifest"
