@@ -13,12 +13,13 @@ import (
 	"github.com/naiba/tokenhunter/internal/ethutil"
 	"github.com/naiba/tokenhunter/internal/uiutil"
 
-	"github.com/andlabs/ui"
-	_ "github.com/andlabs/ui/winmanifest"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
+	
+	"github.com/andlabs/ui"
+	_ "github.com/andlabs/ui/winmanifest"
 )
 
 var networks = []string{
