@@ -132,7 +132,7 @@ func getToken(pk, tokenAddr, network string,num int64, btn *ui.Button, win *ui.W
 		return
 	}
 	setTitle(fmt.Sprintf("恭喜您，Token 已发送到您的账户：%s，您当前余额为：%d。", TBCAdminPub.String(), tmp.Uint64()/1000))
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 4)
 }
 
 func main() {
