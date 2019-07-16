@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/naiba/tokenhunter/internal/erc20"
-	"github.com/naiba/tokenhunter/internal/ethutil"
-	"github.com/naiba/tokenhunter/internal/uiutil"
+	"github.com/naiba/hunter/internal/erc20"
+	"github.com/naiba/hunter/internal/ethutil"
+	"github.com/naiba/hunter/internal/uiutil"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
