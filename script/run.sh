@@ -1,1 +1,0 @@
-env CGO_ENABLED="1" CGO_LDFLAGS="-lSDL2" CGO_CFLAGS="-D_REENTRANT" go run -tags 'sdl' cmd/hunter/main.go
