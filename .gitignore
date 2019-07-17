@@ -1,4 +1,4 @@
 hunter.app
 /github.com
 .DS_Store
-*.exe
+/hunter-*
