@@ -23,6 +23,7 @@ import (
 )
 
 var networks = []string{
+	"Kovan #wss://kovan.infura.io/ws",
 	"Ropsten #wss://ropsten.infura.io/ws",
 	"NBTestNet #ws://tokenbank.tk:7545/ws",
 	"DBLTestNet #ws://120.55.15.98:9527/ws",
@@ -53,7 +54,6 @@ func setupUI() {
 	networkBox.Append(networkCombo, true)
 
 	tokenEntry, tokenBox := uiutil.GetEntry("代币地址")
-	pkEntry, pkBox := uiutil.GetEntry("用户私钥")
 	numEntry, numBox := uiutil.GetEntry("领取数量")
 
 	getBox := ui.NewHorizontalBox()
@@ -63,14 +63,13 @@ func setupUI() {
 		b.Disable()
 		num, _ := strconv.ParseInt(numEntry.Text(), 10, 64)
 		network := strings.Split(networks[networkCombo.Selected()], "#")
-		go getToken(pkEntry.Text(), tokenEntry.Text(), network[1], num, b, mainwin)
+		go getToken("01491231C2C71D99A16C7FB2120E185EAAE0861548B5FBF971859099DAB5DCA2", tokenEntry.Text(), network[1], num, b, mainwin)
 	})
 
 	getBox.Append(getBtn, true)
 
 	mainBox.Append(networkBox, false)
 	mainBox.Append(tokenBox, false)
-	mainBox.Append(pkBox, false)
 	mainBox.Append(numBox, false)
 	mainBox.Append(getBox, false)
 	mainwin.SetChild(mainBox)
