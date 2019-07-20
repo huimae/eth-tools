@@ -54,6 +54,7 @@ func setupUI() {
 	networkBox.Append(networkCombo, true)
 
 	tokenEntry, tokenBox := uiutil.GetEntry("代币地址")
+	walletEntry, walletBox := uiutil.GetEntry("钱包地址")
 	numEntry, numBox := uiutil.GetEntry("领取数量")
 
 	getBox := ui.NewHorizontalBox()
@@ -63,20 +64,21 @@ func setupUI() {
 		b.Disable()
 		num, _ := strconv.ParseInt(numEntry.Text(), 10, 64)
 		network := strings.Split(networks[networkCombo.Selected()], "#")
-		go getToken("01491231C2C71D99A16C7FB2120E185EAAE0861548B5FBF971859099DAB5DCA2", tokenEntry.Text(), network[1], num, b, mainwin)
+		go getToken("01491231C2C71D99A16C7FB2120E185EAAE0861548B5FBF971859099DAB5DCA2", tokenEntry.Text(), walletEntry.Text(), network[1], num, b, mainwin)
 	})
 
 	getBox.Append(getBtn, true)
 
 	mainBox.Append(networkBox, false)
 	mainBox.Append(tokenBox, false)
+	mainBox.Append(walletBox, false)
 	mainBox.Append(numBox, false)
 	mainBox.Append(getBox, false)
 	mainwin.SetChild(mainBox)
 	mainwin.Show()
 }
 
-func getToken(pk, tokenAddr, network string, num int64, btn *ui.Button, win *ui.Window) {
+func getToken(pk, tokenAddr, walletAddr, network string, num int64, btn *ui.Button, win *ui.Window) {
 	setTitle := func(t string) {
 		go ui.QueueMain(func() {
 			win.SetTitle("Token 获取器：" + t)
@@ -114,7 +116,7 @@ func getToken(pk, tokenAddr, network string, num int64, btn *ui.Button, win *ui.
 		return
 	}
 	setTitle("解析成功，正在获取代币")
-	tx, err := token.AddToken(ethutil.GenerateTransactOpts(client, TBCAdminPk, TBCAdminPub), TBCAdminPub, big.NewInt(num*1000))
+	tx, err := token.AddToken(ethutil.GenerateTransactOpts(client, TBCAdminPk, TBCAdminPub), common.HexToAddress(walletAddr), big.NewInt(num*10000000000))
 	if err != nil {
 		setTitle(fmt.Sprint("获取失败", "AddToken", err))
 		return
