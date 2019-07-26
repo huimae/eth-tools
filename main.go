@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/naiba/hunter/internal/erc20"
-	"github.com/naiba/hunter/internal/ethutil"
-	"github.com/naiba/hunter/internal/uiutil"
+	"github.com/naiba/eth-debugger/internal/erc20"
+	"github.com/naiba/eth-debugger/internal/ethutil"
+	"github.com/naiba/eth-debugger/internal/uiutil"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
