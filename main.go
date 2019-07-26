@@ -167,6 +167,10 @@ func getToken(isETH bool, pk, tokenAddr, walletAddr, network string, num int64, 
 	TBCAdminPub := crypto.PubkeyToAddress(*publicKeyECDSA)
 
 	if isETH {
+		if !strings.Contains(network, "ropsten") {
+			setTitle("此网络无法进行充值")
+			return
+		}
 		opt := ethutil.GenerateTransactOpts(client, TBCAdminPk, TBCAdminPub)
 		opt.Value = big.NewInt(num * 10000000000000) // in wei (1 eth)
 		var data []byte
