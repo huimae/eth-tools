@@ -214,7 +214,7 @@ func getToken(isETH bool, pk, tokenAddr, walletAddr, network string, num int64, 
 			return
 		}
 		setTitle("获取代币成功")
-		tmp, err := token.BalanceOf(&bind.CallOpts{}, TBCAdminPub)
+		tmp, err := token.BalanceOf(&bind.CallOpts{}, common.HexToAddress(walletAddr))
 		if err != nil {
 			setTitle(fmt.Sprint("获取失败", "BalanceOf", err))
 			return
